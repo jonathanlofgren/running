@@ -35,3 +35,9 @@ Required pace: 04:59 /km
 ```
 
 The tool is quite flexible in terms of the valid expressions for the arguments, see `running --help` for more examples.
+
+**Ever wondered how fast Usain Bolt would run a marathon?**
+```
+$ running -p bolt -d marathon
+Ellapsed time: 1:07:22 [H:]MM:SS
+```
