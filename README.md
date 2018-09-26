@@ -1,4 +1,4 @@
-# 🏃running 🏃
+# 🏃‍♀️running 🏃
 [![image](https://img.shields.io/pypi/v/running.svg)](https://pypi.org/project/running/)
 [![image](https://img.shields.io/pypi/pyversions/running.svg)](https://pypi.org/project/running/)
 
