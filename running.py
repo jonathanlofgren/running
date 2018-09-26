@@ -111,7 +111,7 @@ def output_line(pre: str, bolded: str, post: str) -> None:
 
 def error(message: str) -> None:
     click.secho(message, fg='red')
-    click.echo('Run pacer --help for further instructions.')
+    click.echo('See running --help for further instructions.')
 
 
 def identify_mode(

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='running',
-    version='0.1.0',
+    version='0.1.1',
     description='User-friendly running pace calculator',
     url='https://github.com/jonathanlofgren/running',
     author='Jonathan Löfgren',
