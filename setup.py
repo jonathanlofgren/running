@@ -5,6 +5,7 @@ setup(
     version='0.1.0',
     description='User-friendly running pace calculator',
     author='Jonathan Löfgren',
+    author_email='lofgren021@gmail.com',
     py_modules=['running'],
     install_requires=[
         'Click',
