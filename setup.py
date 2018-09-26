@@ -4,6 +4,7 @@ setup(
     name='running',
     version='0.1.0',
     description='User-friendly running pace calculator',
+    url='https://github.com/jonathanlofgren/running',
     author='Jonathan Löfgren',
     author_email='lofgren021@gmail.com',
     py_modules=['running'],
@@ -11,7 +12,7 @@ setup(
         'Click',
     ],
     classifiers=[
-        'Natural Language :: English'
+        'Natural Language :: English',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: MIT License'
