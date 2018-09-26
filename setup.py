@@ -12,7 +12,8 @@ setup(
     classifiers=[
         'Natural Language :: English'
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
+        'License :: OSI Approved :: MIT License'
     ],
     entry_points='''
         [console_scripts]
