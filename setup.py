@@ -10,7 +10,7 @@ if sys.argv[-1] == "publish":
 # 'setup.py publish' shortcut.
 if sys.argv[-1] == "publish-test":
     os.system("python -m build")
-    os.system("twine -r testpypi upload dist/*")
+    os.system("twine upload -r testpypi dist/*")
     sys.exit()
 
 with open("README.md", "r") as f:
