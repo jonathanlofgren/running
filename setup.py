@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='running',
-    version='0.1.1',
+    version='0.1.2',
     description='User-friendly running pace calculator',
     url='https://github.com/jonathanlofgren/running',
     author='Jonathan Löfgren',
@@ -15,6 +15,9 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: MIT License'
     ],
     entry_points='''
