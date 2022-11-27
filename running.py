@@ -94,7 +94,7 @@ def running(time: str, distance: str, pace: str, unit: str):
         speed = parse_pace(pace, unit)
         meters = parse_distance(distance, unit)
         seconds: Seconds = meters / speed
-        output_line('Ellapsed time:', format_seconds(seconds), '[H:]MM:SS')
+        output_line('Elapsed time:', format_seconds(seconds), '[H:]MM:SS')
 
     elif mode == Mode.NOT_ENOUGH:
         error('You need to give atleast two of time, distance or pace.')
