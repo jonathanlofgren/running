@@ -241,6 +241,7 @@ def print_splits(meters: Meters, speed: MetersPerSecond, unit: str) -> None:
     max_label_width = max(len(label) for label, _ in lines)
 
     click.echo()
+    click.secho("Splits:", bold=True)
     for label, time_str in lines:
         click.echo(f"  {label:>{max_label_width}} {unit}  {time_str}")
 

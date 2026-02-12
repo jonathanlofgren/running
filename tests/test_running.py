@@ -152,6 +152,7 @@ SPLITS_CASES = [
 def test_splits(args, expected_fragments):
     result = run(*args)
     assert result.exit_code == 0
+    assert "Splits:" in result.output
     for fragment in expected_fragments:
         assert fragment in result.output
 
