@@ -1,7 +1,9 @@
-import re
+from __future__ import annotations
+
 import enum
+import re
+
 import click
-from typing import Tuple, Optional
 
 DISTANCE_UNITS = {
     'feet': 0.3048,
@@ -115,9 +117,9 @@ def error(message: str) -> None:
 
 
 def identify_mode(
-        time: Optional[str],
-        distance: Optional[str],
-        pace: Optional[str]) -> Mode:
+        time: str | None,
+        distance: str | None,
+        pace: str | None) -> Mode:
 
     def given(*metrics):
         return all(metric is not None for metric in metrics)
@@ -169,7 +171,7 @@ def parse_pace(pace: str, default_unit: str) -> MetersPerSecond:
     return distance / time
 
 
-def extract_num_and_unit(num_and_unit) -> Tuple[float, Optional[str]]:
+def extract_num_and_unit(num_and_unit) -> tuple[float, str | None]:
     match = re.match(r"(\d*\.\d+|\d+)([\w-]*)\Z", num_and_unit)
     if not match:
         raise ValueError(f'Invalid unit {num_and_unit}')
