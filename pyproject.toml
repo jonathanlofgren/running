@@ -22,6 +22,9 @@ classifiers = [
 ]
 dependencies = ["click"]
 
+[project.optional-dependencies]
+test = ["pytest"]
+
 [project.scripts]
 running = "running:running"
 
