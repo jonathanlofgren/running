@@ -65,11 +65,11 @@ RACE_DISTANCES: list[tuple[str, float]] = [
 
 
 class Mode(enum.Enum):
-    PACE = 0
-    DISTANCE = 1
-    TIME = 2
-    NOT_ENOUGH = 3
-    TOO_MUCH = 4
+    PACE = enum.auto()
+    DISTANCE = enum.auto()
+    TIME = enum.auto()
+    NOT_ENOUGH = enum.auto()
+    TOO_MUCH = enum.auto()
 
 
 Meters = float
@@ -107,7 +107,7 @@ MetersPerSecond = float
     default=False,
     help="Show predicted race times using the Riegel formula.",
 )
-def running(time: str, distance: str, pace: str, unit: str, splits: bool, predict: bool):
+def running(time: str, distance: str, pace: str, unit: str, splits: bool, predict: bool) -> None:
     mode = identify_mode(time, distance, pace)
     meters: Meters | None = None
     speed: MetersPerSecond | None = None
@@ -127,20 +127,20 @@ def running(time: str, distance: str, pace: str, unit: str, splits: bool, predic
     elif mode == Mode.TIME:
         speed = parse_pace(pace, unit)
         meters = parse_distance(distance, unit)
-        seconds: Seconds = meters / speed
+        seconds = meters / speed
         output_line("Elapsed time:", format_seconds(seconds), "[H:]MM:SS")
 
     elif mode == Mode.NOT_ENOUGH:
-        error("You need to give atleast two of time, distance or pace.")
+        error("You need to give at least two of time, distance or pace.")
 
     elif mode == Mode.TOO_MUCH:
         error("You provided time, distance and pace. Try omitting one.")
 
-    if splits and meters is not None and speed is not None:
-        print_splits(meters, speed, unit)
-
-    if predict and meters is not None and speed is not None:
-        print_predictions(meters, speed, unit)
+    if meters is not None and speed is not None:
+        if splits:
+            print_splits(meters, speed, unit)
+        if predict:
+            print_predictions(meters, speed, unit)
 
 
 def output_line(pre: str, bolded: str, post: str) -> None:
@@ -155,7 +155,7 @@ def error(message: str) -> None:
 
 
 def identify_mode(time: str | None, distance: str | None, pace: str | None) -> Mode:
-    def given(*metrics):
+    def given(*metrics: str | None) -> bool:
         return all(metric is not None for metric in metrics)
 
     if given(time, distance, pace):
@@ -205,7 +205,7 @@ def parse_pace(pace: str, default_unit: str) -> MetersPerSecond:
     return distance / time
 
 
-def extract_num_and_unit(num_and_unit) -> tuple[float, str | None]:
+def extract_num_and_unit(num_and_unit: str) -> tuple[float, str]:
     match = re.match(r"(\d*\.\d+|\d+)([\w-]*)\Z", num_and_unit)
     if not match:
         raise ValueError(f"Invalid unit {num_and_unit}")

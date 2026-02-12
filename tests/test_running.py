@@ -112,13 +112,13 @@ def test_short_flags_match_long_flags(short_args, long_args):
 def test_not_enough_args():
     result = run("--pace", "5:00")
     assert result.exit_code == 0
-    assert "atleast two" in result.output
+    assert "at least two" in result.output
 
 
 def test_no_args():
     result = run()
     assert result.exit_code == 0
-    assert "atleast two" in result.output
+    assert "at least two" in result.output
 
 
 def test_too_many_args():
@@ -204,7 +204,7 @@ def test_splits_pace_mode():
 def test_splits_ignored_on_error():
     result = run("-p", "5:00", "--splits")
     assert result.exit_code == 0
-    assert "atleast two" in result.output
+    assert "at least two" in result.output
 
 
 # --- Race predictions ---
@@ -263,7 +263,7 @@ def test_predict_with_splits():
 def test_predict_ignored_on_error():
     result = run("-p", "5:00", "--predict")
     assert result.exit_code == 0
-    assert "atleast two" in result.output
+    assert "at least two" in result.output
     assert "Race predictions:" not in result.output
 
 
