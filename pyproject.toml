@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "running"
-version = "0.3.0"
+version = "0.4.0"
 description = "User-friendly running pace calculator"
 readme = "README.md"
 license = "MIT"
