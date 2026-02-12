@@ -8,7 +8,10 @@ Clone the repo and install in editable mode with dev and test dependencies:
 git clone https://github.com/jonathanlofgren/running.git
 cd running
 pip install -e .[dev,test]
+pre-commit install
 ```
+
+This installs a pre-commit hook that runs ruff linting and formatting checks automatically on each commit.
 
 ## Running tests
 

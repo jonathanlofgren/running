@@ -8,23 +8,23 @@ version = "0.2.0"
 description = "User-friendly running pace calculator"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     { name = "Jonathan Löfgren", email = "lofgren021@gmail.com" },
 ]
 classifiers = [
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = ["click"]
 
 [project.optional-dependencies]
 test = ["pytest"]
-dev = ["ruff"]
+dev = ["ruff", "pre-commit"]
 
 [project.scripts]
 running = "running:running"
@@ -36,7 +36,7 @@ Source = "https://github.com/jonathanlofgren/running"
 testpaths = ["tests"]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 100
 
 [tool.ruff.lint]
