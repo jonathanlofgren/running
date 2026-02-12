@@ -48,7 +48,11 @@ TIME_UNITS = {
     "week": WEEK,
     "weeks": WEEK,
 }
-PACES = {"kipchoge": 42195 / (2 * HOUR + 1 * MINUTE + 39), "bolt": 100 / 9.58}
+PACES = {
+    "kipchoge": 42195 / (2 * HOUR + 1 * MINUTE + 9),
+    "kiptum": 42195 / (2 * HOUR + 0 * MINUTE + 35),
+    "bolt": 100 / 9.58,
+}
 
 
 class Mode(enum.Enum):
@@ -120,7 +124,6 @@ def error(message: str) -> None:
 
 
 def identify_mode(time: str | None, distance: str | None, pace: str | None) -> Mode:
-
     def given(*metrics):
         return all(metric is not None for metric in metrics)
 
