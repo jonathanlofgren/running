@@ -53,6 +53,15 @@ PACES = {
     "kiptum": 42195 / (2 * HOUR + 0 * MINUTE + 35),
     "bolt": 100 / 9.58,
 }
+RIEGEL_EXPONENT = 1.06
+RACE_DISTANCES: list[tuple[str, float]] = [
+    ("1500m", 1500),
+    ("1 mile", 1609.344),
+    ("5K", 5000),
+    ("10K", 10000),
+    ("Half-marathon", 42195 / 2),
+    ("Marathon", 42195),
+]
 
 
 class Mode(enum.Enum):
@@ -91,7 +100,14 @@ MetersPerSecond = float
     default=False,
     help="Show split times at each unit interval.",
 )
-def running(time: str, distance: str, pace: str, unit: str, splits: bool):
+@click.option(
+    "--predict",
+    "-r",
+    is_flag=True,
+    default=False,
+    help="Show predicted race times using the Riegel formula.",
+)
+def running(time: str, distance: str, pace: str, unit: str, splits: bool, predict: bool):
     mode = identify_mode(time, distance, pace)
     meters: Meters | None = None
     speed: MetersPerSecond | None = None
@@ -122,6 +138,9 @@ def running(time: str, distance: str, pace: str, unit: str, splits: bool):
 
     if splits and meters is not None and speed is not None:
         print_splits(meters, speed, unit)
+
+    if predict and meters is not None and speed is not None:
+        print_predictions(meters, speed, unit)
 
 
 def output_line(pre: str, bolded: str, post: str) -> None:
@@ -245,6 +264,25 @@ def print_splits(meters: Meters, speed: MetersPerSecond, unit: str) -> None:
     for label, time_str in lines:
         click.secho(f"  {label:>{max_label_width}} {unit}  ", dim=True, nl=False)
         click.echo(time_str)
+
+
+def print_predictions(meters: Meters, speed: MetersPerSecond, unit: str) -> None:
+    seconds = meters / speed
+
+    lines: list[tuple[str, str, str]] = []
+    for name, race_meters in RACE_DISTANCES:
+        predicted = seconds * (race_meters / meters) ** RIEGEL_EXPONENT
+        pace_str = format_pace(race_meters / predicted, unit)
+        lines.append((name, format_seconds(predicted), pace_str))
+
+    max_label_width = max(len(name) for name, _, _ in lines)
+
+    click.echo()
+    click.secho("Race predictions:", bold=True)
+    for name, time_str, pace_str in lines:
+        click.secho(f"  {name:>{max_label_width}}  ", dim=True, nl=False)
+        click.echo(time_str, nl=False)
+        click.secho(f"   ({pace_str} /{unit})", dim=True)
 
 
 if __name__ == "__main__":

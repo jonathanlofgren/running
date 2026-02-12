@@ -207,6 +207,84 @@ def test_splits_ignored_on_error():
     assert "atleast two" in result.output
 
 
+# --- Race predictions ---
+
+PREDICT_CASES = [
+    # 10K in 45:00 -> should show all race distances
+    (
+        ["-d", "10km", "-t", "45:00", "--predict"],
+        ["Race predictions:", "1500m", "1 mile", "5K", "10K", "Half-marathon", "Marathon"],
+    ),
+    # Short flag -r works the same
+    (
+        ["-d", "10km", "-t", "45:00", "-r"],
+        ["Race predictions:", "Marathon"],
+    ),
+]
+
+
+@pytest.mark.parametrize("args, expected_fragments", PREDICT_CASES)
+def test_predict(args, expected_fragments):
+    result = run(*args)
+    assert result.exit_code == 0
+    for fragment in expected_fragments:
+        assert fragment in result.output
+
+
+def test_predict_pace_mode():
+    result = run("-d", "5km", "-t", "25:00", "--predict")
+    assert result.exit_code == 0
+    assert "Required pace:" in result.output
+    assert "Race predictions:" in result.output
+    assert "Marathon" in result.output
+
+
+def test_predict_time_mode():
+    result = run("-p", "5:00", "-d", "10km", "--predict")
+    assert result.exit_code == 0
+    assert "Elapsed time:" in result.output
+    assert "Race predictions:" in result.output
+
+
+def test_predict_distance_mode():
+    result = run("-p", "5:00", "-t", "50min", "--predict")
+    assert result.exit_code == 0
+    assert "Travelled distance:" in result.output
+    assert "Race predictions:" in result.output
+
+
+def test_predict_with_splits():
+    result = run("-d", "10km", "-t", "45:00", "--predict", "--splits")
+    assert result.exit_code == 0
+    assert "Splits:" in result.output
+    assert "Race predictions:" in result.output
+
+
+def test_predict_ignored_on_error():
+    result = run("-p", "5:00", "--predict")
+    assert result.exit_code == 0
+    assert "atleast two" in result.output
+    assert "Race predictions:" not in result.output
+
+
+def test_predict_short_flag():
+    short_result = run("-d", "10km", "-t", "45:00", "-r")
+    long_result = run("-d", "10km", "-t", "45:00", "--predict")
+    assert short_result.output == long_result.output
+
+
+def test_predict_shows_pace():
+    result = run("-d", "10km", "-t", "45:00", "--predict")
+    assert result.exit_code == 0
+    assert "/km" in result.output
+
+
+def test_predict_mile_unit():
+    result = run("-d", "10km", "-t", "45:00", "--predict", "-u", "mile")
+    assert result.exit_code == 0
+    assert "/mile" in result.output
+
+
 # --- Help ---
 
 
@@ -218,3 +296,4 @@ def test_help():
     assert "--time" in result.output
     assert "--unit" in result.output
     assert "--splits" in result.output
+    assert "--predict" in result.output
