@@ -37,6 +37,7 @@ testpaths = ["tests"]
 
 [tool.mypy]
 strict = true
+exclude = ["tests/", "build/"]
 
 [tool.ruff]
 target-version = "py310"

@@ -9,3 +9,4 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [click]
+        exclude: ^tests/
