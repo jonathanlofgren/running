@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "running"
+version = "0.2.0"
+description = "User-friendly running pace calculator"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Jonathan Löfgren", email = "lofgren021@gmail.com" },
+]
+classifiers = [
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = ["click"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+dev = ["ruff"]
+
+[project.scripts]
+running = "running:running"
+
+[project.urls]
+Source = "https://github.com/jonathanlofgren/running"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
