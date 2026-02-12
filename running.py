@@ -125,9 +125,9 @@ def running(time: str, distance: str, pace: str, unit: str, splits: bool):
 
 
 def output_line(pre: str, bolded: str, post: str) -> None:
-    click.echo(f"{pre} ", nl=False)
+    click.secho(f"{pre} ", dim=True, nl=False)
     click.secho(bolded, bold=True, nl=False)
-    click.echo(f" {post}")
+    click.secho(f" {post}", dim=True)
 
 
 def error(message: str) -> None:
@@ -243,7 +243,8 @@ def print_splits(meters: Meters, speed: MetersPerSecond, unit: str) -> None:
     click.echo()
     click.secho("Splits:", bold=True)
     for label, time_str in lines:
-        click.echo(f"  {label:>{max_label_width}} {unit}  {time_str}")
+        click.secho(f"  {label:>{max_label_width}} {unit}  ", dim=True, nl=False)
+        click.echo(time_str)
 
 
 if __name__ == "__main__":
