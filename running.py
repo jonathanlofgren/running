@@ -276,12 +276,13 @@ def print_predictions(meters: Meters, speed: MetersPerSecond, unit: str) -> None
         lines.append((name, format_seconds(predicted), pace_str))
 
     max_label_width = max(len(name) for name, _, _ in lines)
+    max_time_width = max(len(time_str) for _, time_str, _ in lines)
 
     click.echo()
     click.secho("Race predictions:", bold=True)
     for name, time_str, pace_str in lines:
         click.secho(f"  {name:>{max_label_width}}  ", dim=True, nl=False)
-        click.echo(time_str, nl=False)
+        click.echo(f"{time_str:>{max_time_width}}", nl=False)
         click.secho(f"   ({pace_str} /{unit})", dim=True)
 
 

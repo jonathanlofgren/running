@@ -49,6 +49,20 @@ Elapsed time: 3:09:53 [H:]MM:SS
 42.195 km  3:09:53
 ```
 
+Predict race times for other distances with `--predict` (`-r`), using the Riegel formula:
+```
+$ running -d 10km -t 45:00 --predict
+Required pace: 04:30 /km
+
+Race predictions:
+          1500m    06:01   (04:01 /km)
+         1 mile    06:29   (04:02 /km)
+             5K    21:35   (04:19 /km)
+            10K    45:00   (04:30 /km)
+  Half-marathon  1:39:17   (04:42 /km)
+       Marathon  3:27:01   (04:54 /km)
+```
+
 The tool is quite flexible in terms of the valid expressions for the arguments, see `running --help` for more examples.
 
 **Ever wondered how fast Usain Bolt would run a marathon?**
