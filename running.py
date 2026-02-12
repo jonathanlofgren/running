@@ -48,7 +48,11 @@ TIME_UNITS = {
     "week": WEEK,
     "weeks": WEEK,
 }
-PACES = {"kipchoge": 42195 / (2 * HOUR + 1 * MINUTE + 39), "bolt": 100 / 9.58}
+PACES = {
+    "kipchoge": 42195 / (2 * HOUR + 1 * MINUTE + 9),
+    "kiptum": 42195 / (2 * HOUR + 0 * MINUTE + 35),
+    "bolt": 100 / 9.58,
+}
 
 
 class Mode(enum.Enum):
@@ -80,19 +84,28 @@ MetersPerSecond = float
     help="Default distance unit when omitted and for result (default is kilometer).",
     default="km",
 )
-def running(time: str, distance: str, pace: str, unit: str):
+@click.option(
+    "--splits",
+    "-s",
+    is_flag=True,
+    default=False,
+    help="Show split times at each unit interval.",
+)
+def running(time: str, distance: str, pace: str, unit: str, splits: bool):
     mode = identify_mode(time, distance, pace)
+    meters: Meters | None = None
+    speed: MetersPerSecond | None = None
 
     if mode == Mode.PACE:
         seconds = parse_time(time)
         meters = parse_distance(distance, unit)
-        speed: MetersPerSecond = meters / seconds
+        speed = meters / seconds
         output_line("Required pace:", format_pace(speed, unit), "/" + unit)
 
     elif mode == Mode.DISTANCE:
         speed = parse_pace(pace, unit)
         seconds = parse_time(time)
-        meters: Meters = speed * seconds
+        meters = speed * seconds
         output_line("Travelled distance:", format_distance(meters, unit), unit)
 
     elif mode == Mode.TIME:
@@ -107,11 +120,14 @@ def running(time: str, distance: str, pace: str, unit: str):
     elif mode == Mode.TOO_MUCH:
         error("You provided time, distance and pace. Try omitting one.")
 
+    if splits and meters is not None and speed is not None:
+        print_splits(meters, speed, unit)
+
 
 def output_line(pre: str, bolded: str, post: str) -> None:
-    click.echo(f"{pre} ", nl=False)
+    click.secho(f"{pre} ", dim=True, nl=False)
     click.secho(bolded, bold=True, nl=False)
-    click.echo(f" {post}")
+    click.secho(f" {post}", dim=True)
 
 
 def error(message: str) -> None:
@@ -120,7 +136,6 @@ def error(message: str) -> None:
 
 
 def identify_mode(time: str | None, distance: str | None, pace: str | None) -> Mode:
-
     def given(*metrics):
         return all(metric is not None for metric in metrics)
 
@@ -197,6 +212,39 @@ def format_seconds(seconds: Seconds) -> str:
 def format_distance(distance: Meters, unit: str) -> str:
     n_units = distance / DISTANCE_UNITS[unit]
     return f"{n_units:.2f}"
+
+
+def _format_split_label(distance_units: float) -> str:
+    if distance_units == int(distance_units):
+        return str(int(distance_units))
+    return f"{distance_units:.3f}".rstrip("0").rstrip(".")
+
+
+def print_splits(meters: Meters, speed: MetersPerSecond, unit: str) -> None:
+    interval = DISTANCE_UNITS[unit]
+    total_units = meters / interval
+    full_intervals = int(total_units)
+
+    lines: list[tuple[str, str]] = []
+    for i in range(1, full_intervals + 1):
+        cumulative_seconds = (i * interval) / speed
+        lines.append((str(i), format_seconds(cumulative_seconds)))
+
+    remainder = total_units - full_intervals
+    if remainder > 1e-9:
+        label = _format_split_label(total_units)
+        lines.append((label, format_seconds(meters / speed)))
+
+    if not lines:
+        return
+
+    max_label_width = max(len(label) for label, _ in lines)
+
+    click.echo()
+    click.secho("Splits:", bold=True)
+    for label, time_str in lines:
+        click.secho(f"  {label:>{max_label_width}} {unit}  ", dim=True, nl=False)
+        click.echo(time_str)
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ ELAPSED_TIME_CASES = [
     (["-p", "5:00/km", "-d", "10km"], "50:00"),
     (["-p", "6min/mile", "-d", "1mile"], "06:00"),
     (["-p", "bolt", "-d", "marathon"], "1:07"),
-    (["-p", "kipchoge", "-d", "marathon"], "2:01:39"),
+    (["-p", "kipchoge", "-d", "marathon"], "2:01:09"),
     (["-p", "5:00", "-d", "half-marathon"], "1:45"),
     (["-p", "5:00", "-d", "half"], "1:45"),
     (["-p", "8:00", "-d", "800m"], "06:24"),
@@ -127,6 +127,86 @@ def test_too_many_args():
     assert "omitting one" in result.output
 
 
+# --- Splits ---
+
+SPLITS_CASES = [
+    # 3km at 5:00/km -> 3 even splits
+    (
+        ["-p", "5:00", "-d", "3km", "--splits"],
+        ["1 km", "05:00", "2 km", "10:00", "3 km", "15:00"],
+    ),
+    # Marathon at 4:30 -> first, last full, and partial split
+    (
+        ["-p", "4:30", "-d", "marathon", "--splits"],
+        ["1 km", "04:30", "42 km", "42.195 km"],
+    ),
+    # Half-marathon partial split present
+    (
+        ["-p", "5:00", "-d", "half-marathon", "-s"],
+        ["1 km", "21 km", "21.098 km"],
+    ),
+]
+
+
+@pytest.mark.parametrize("args, expected_fragments", SPLITS_CASES)
+def test_splits(args, expected_fragments):
+    result = run(*args)
+    assert result.exit_code == 0
+    assert "Splits:" in result.output
+    for fragment in expected_fragments:
+        assert fragment in result.output
+
+
+def test_splits_with_mile_unit():
+    result = run("-p", "8:00/mile", "-d", "3miles", "-u", "mile", "--splits")
+    assert result.exit_code == 0
+    assert "1 mile" in result.output
+    assert "2 mile" in result.output
+    assert "3 mile" in result.output
+
+
+def test_splits_short_distance():
+    result = run("-p", "5:00", "-d", "800m", "--splits")
+    assert result.exit_code == 0
+    assert "0.8 km" in result.output
+    assert "1 km" not in result.output
+
+
+def test_splits_exact_distance():
+    result = run("-p", "5:00", "-d", "5km", "--splits")
+    assert result.exit_code == 0
+    assert "5 km" in result.output
+    split_lines = [
+        line
+        for line in result.output.strip().split("\n")
+        if "km" in line and line.strip()[0].isdigit()
+    ]
+    assert len(split_lines) == 5
+
+
+def test_splits_distance_mode():
+    result = run("-p", "5:00", "-t", "12min", "--splits")
+    assert result.exit_code == 0
+    assert "Travelled distance:" in result.output
+    assert "1 km" in result.output
+    assert "2 km" in result.output
+    assert "2.4 km" in result.output
+
+
+def test_splits_pace_mode():
+    result = run("-d", "10km", "-t", "50:00", "--splits")
+    assert result.exit_code == 0
+    assert "Required pace:" in result.output
+    assert "1 km" in result.output
+    assert "10 km" in result.output
+
+
+def test_splits_ignored_on_error():
+    result = run("-p", "5:00", "--splits")
+    assert result.exit_code == 0
+    assert "atleast two" in result.output
+
+
 # --- Help ---
 
 
@@ -137,3 +217,4 @@ def test_help():
     assert "--distance" in result.output
     assert "--time" in result.output
     assert "--unit" in result.output
+    assert "--splits" in result.output

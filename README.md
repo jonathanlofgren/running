@@ -36,6 +36,19 @@ $ running -d half-marathon -t 1:45:00
 Required pace: 04:59 /km
 ```
 
+You can also view split times with `--splits` (`-s`):
+```
+$ running -p 4:30 -d marathon --splits
+Elapsed time: 3:09:53 [H:]MM:SS
+
+   1 km  04:30
+   2 km  09:00
+   3 km  13:30
+  ...
+  42 km  3:09:00
+42.195 km  3:09:53
+```
+
 The tool is quite flexible in terms of the valid expressions for the arguments, see `running --help` for more examples.
 
 **Ever wondered how fast Usain Bolt would run a marathon?**
